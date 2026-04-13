@@ -1,0 +1,1 @@
+Free to use in any personal or  commercial project. Not for resale in part or in whole.
