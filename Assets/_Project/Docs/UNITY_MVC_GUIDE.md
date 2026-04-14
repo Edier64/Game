@@ -182,3 +182,34 @@ Setup rapido en escena:
 - Tecla F enciende/apaga.
 - La bateria se consume encendida.
 - Al agotarse se apaga sola.
+
+## Scena template para multiplos niveles
+
+Para evitar repetir la misma estructura en cada escena:
+
+1. Abriras escena template en `Assets/_Project/Scenes/Template_Level.unity`.
+2. Esta tiene:
+   - GameSystems con todos los controladores base.
+   - Player con View + Controller.
+   - Spider con View + Controller.
+   - Main Camera con Light tipo Spot para linterna.
+3. Duplica esta escena para cada nuevo nivel.
+4. O usa el menu: `Huey > Scenes > Create New Scene from Template`.
+5. Te pide nombre (ej: Level_1, Level_Barn, etc).
+6. La crea automaticamente con todas referencias internas conectadas.
+7. Solo cambias assets visuales (modelos, texturas, posiciones).
+
+Ventajas:
+
+- No repites setup MVC.
+- Referencias internas ya estan conectadas.
+- Consistencia entre escenas.
+- Escala a muchos niveles sin problemas.
+
+Paso a paso para crear primera escena desde template:
+
+1. En Unity, ve a: `Huey > Scenes > Create New Scene from Template`.
+2. Escribe nombre (ej: Level_Introductory).
+3. Se crea automaticamente desde template.
+4. Cambia posiciones, assets, enemigos, puzzles segun tu diseno.
+5. Guarda.
