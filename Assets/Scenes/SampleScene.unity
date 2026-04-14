@@ -643,13 +643,16 @@ PrefabInstance:
       addedObject: {fileID: 1794945799}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0f08f45bd98159246b0977cd0dbe7e16, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1794945798}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0f08f45bd98159246b0977cd0dbe7e16, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1794945801}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0f08f45bd98159246b0977cd0dbe7e16, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1794945802}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0f08f45bd98159246b0977cd0dbe7e16, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1794945804}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0f08f45bd98159246b0977cd0dbe7e16, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1794945803}
   m_SourcePrefab: {fileID: 100100000, guid: 0f08f45bd98159246b0977cd0dbe7e16, type: 3}
 --- !u!1 &434095163
 GameObject:
@@ -663,8 +666,9 @@ GameObject:
   - component: {fileID: 434095167}
   - component: {fileID: 434095166}
   - component: {fileID: 434095165}
-  - component: {fileID: 434095164}
   - component: {fileID: 434095169}
+  - component: {fileID: 434095171}
+  - component: {fileID: 434095170}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -672,21 +676,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &434095164
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 434095163}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c1925976b7d0bd4094d4c2a67468f04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  speed: 5
-  mouseSensitivity: 200
-  cameraPivot: {fileID: 1504920125}
 --- !u!136 &434095165
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -808,6 +797,38 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.9, z: 0}
+--- !u!114 &434095170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 434095163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 580c7e22a0c23eb45bf5e28cf32b312f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Huye.Features.Player.Controller.PlayerController
+  model:
+    MoveSpeed: 5
+    MouseSensitivity: 200
+    MinPitch: -90
+    MaxPitch: 90
+  view: {fileID: 434095171}
+--- !u!114 &434095171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 434095163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6b1d3b8bea48d945aa0bd3d454ea1d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Huye.Features.Player.View.PlayerView
+  characterController: {fileID: 434095169}
+  cameraPivot: {fileID: 1504920125}
 --- !u!1001 &649094752
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1042,11 +1063,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0ae9a953298632c49ac6f12bd7b2576b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.3581
+      value: 0.76
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0ae9a953298632c49ac6f12bd7b2576b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.41
+      value: -0.803
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0ae9a953298632c49ac6f12bd7b2576b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1988,6 +2009,69 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4804352d3884d714a973e4b64671f418, type: 3}
+--- !u!1 &1697331968
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1697331971}
+  - component: {fileID: 1697331970}
+  - component: {fileID: 1697331969}
+  m_Layer: 0
+  m_Name: GameSystems
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1697331969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697331968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f2b1651005dfa4386c70789c6d86f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Huye.Features.GameLoop.Controller.GameLoopController
+  view: {fileID: 0}
+  playerController: {fileID: 434095170}
+  spiderController: {fileID: 1794945803}
+--- !u!114 &1697331970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697331968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e93f1e97c42acf7449ea0f0376908635, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Huye.Core.Bootstrap.GameBootstrap
+  targetFrameRate: 60
+  playerController: {fileID: 434095170}
+  spiderController: {fileID: 1794945803}
+--- !u!4 &1697331971
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697331968}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1785687921
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2067,24 +2151,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0f08f45bd98159246b0977cd0dbe7e16, type: 3}
   m_PrefabInstance: {fileID: 326814705}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1794945798
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1794945796}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4696ee270a9ccd4189b01ff1c6c441e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpiderAI
-  player: {fileID: 434095168}
-  speed: 4
-  chaseSpeed: 5
-  detectionDistance: 22
-  attackDistance: 1.5
-  isAngry: 0
 --- !u!54 &1794945799
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2252,6 +2318,39 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1794945803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794945796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a71155178ed941418eb2086c4d5ab76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Huye.Features.Enemy.Spider.Controller.SpiderController
+  model:
+    PatrolSpeed: 4
+    ChaseSpeed: 5
+    DetectionDistance: 22
+    AttackDistance: 1.5
+    IsAngry: 0
+  view: {fileID: 1794945804}
+  playerTarget: {fileID: 434095168}
+--- !u!114 &1794945804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794945796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51c9cbbbddd4d1542b84aa42046706fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Huye.Features.Enemy.Spider.View.SpiderView
+  rotationLerp: 5
 --- !u!1001 &2007296517
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2338,3 +2437,4 @@ SceneRoots:
   - {fileID: 1785687921}
   - {fileID: 1666494016}
   - {fileID: 326814705}
+  - {fileID: 1697331971}
