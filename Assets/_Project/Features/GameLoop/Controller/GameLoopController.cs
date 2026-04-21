@@ -1,4 +1,5 @@
 using Huye.Features.Enemy.Spider.Controller;
+using Huye.Features.Enemy.Wendigo.Controller;
 using Huye.Features.GameLoop.Model;
 using Huye.Features.GameLoop.View;
 using Huye.Features.Player.Controller;
@@ -11,6 +12,7 @@ namespace Huye.Features.GameLoop.Controller
         [SerializeField] private GameLoopView view;
         [SerializeField] private PlayerController playerController;
         [SerializeField] private SpiderController spiderController;
+        [SerializeField] private WendigoController wendigoController;
 
         private readonly GameStateModel _model = new GameStateModel();
 
@@ -21,6 +23,11 @@ namespace Huye.Features.GameLoop.Controller
                 spiderController.PlayerKilled += OnPlayerKilled;
             }
 
+            if (wendigoController != null)
+            {
+                wendigoController.PlayerKilled += OnPlayerKilled;
+            }
+
             Render();
         }
 
@@ -29,6 +36,11 @@ namespace Huye.Features.GameLoop.Controller
             if (spiderController != null)
             {
                 spiderController.PlayerKilled -= OnPlayerKilled;
+            }
+
+            if (wendigoController != null)
+            {
+                wendigoController.PlayerKilled -= OnPlayerKilled;
             }
         }
 

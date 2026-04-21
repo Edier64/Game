@@ -2,6 +2,8 @@
 using Huye.Core.Bootstrap;
 using Huye.Features.Enemy.Spider.Controller;
 using Huye.Features.Enemy.Spider.View;
+using Huye.Features.Enemy.Wendigo.Controller;
+using Huye.Features.Enemy.Wendigo.View;
 using Huye.Features.Flashlight.Controller;
 using Huye.Features.Flashlight.View;
 using Huye.Features.GameLoop.Controller;
@@ -11,6 +13,7 @@ using Huye.Features.Player.View;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
 namespace Huye.Tools.Editor
@@ -54,7 +57,8 @@ namespace Huye.Tools.Editor
             mainCamera.transform.SetParent(cameraPivot.transform);
             mainCamera.transform.localPosition = Vector3.zero;
 
-            playerView.cameraPivot = cameraPivot.transform;
+            playerViewSo.FindProperty("cameraPivot").objectReferenceValue = cameraPivot.transform;
+            playerViewSo.ApplyModifiedPropertiesWithoutUndo();
 
             // Flashlight en la camera
             var light = mainCamera.AddComponent<Light>();
@@ -85,15 +89,38 @@ namespace Huye.Tools.Editor
             spiderControllerSo.FindProperty("playerTarget").objectReferenceValue = playerGo.transform;
             spiderControllerSo.ApplyModifiedPropertiesWithoutUndo();
 
+            // Crear Wendigo
+            var wendigoGo = new GameObject("wendigo");
+            wendigoGo.AddComponent<NavMeshAgent>();
+            wendigoGo.AddComponent<Animator>();
+            var wendigoView = wendigoGo.AddComponent<WendigoView>();
+            var wendigoController = wendigoGo.AddComponent<WendigoController>();
+
+            SerializedObject wendigoViewSo = new SerializedObject(wendigoView);
+            wendigoViewSo.FindProperty("agent").objectReferenceValue = wendigoGo.GetComponent<NavMeshAgent>();
+            wendigoViewSo.FindProperty("animator").objectReferenceValue = wendigoGo.GetComponent<Animator>();
+            wendigoViewSo.ApplyModifiedPropertiesWithoutUndo();
+
+            SerializedObject wendigoControllerSo = new SerializedObject(wendigoController);
+            wendigoControllerSo.FindProperty("view").objectReferenceValue = wendigoView;
+            wendigoControllerSo.FindProperty("playerTarget").objectReferenceValue = playerGo.transform;
+            wendigoControllerSo.ApplyModifiedPropertiesWithoutUndo();
+
             // Conectar sistemas
             SerializedObject bootSo = new SerializedObject(gameSystems.GetComponent<GameBootstrap>());
             bootSo.FindProperty("playerController").objectReferenceValue = playerController;
             bootSo.FindProperty("spiderController").objectReferenceValue = spiderController;
+            bootSo.FindProperty("wendigoController").objectReferenceValue = wendigoController;
             bootSo.ApplyModifiedPropertiesWithoutUndo();
 
             SerializedObject gameLoopSo = new SerializedObject(gameSystems.GetComponent<GameLoopController>());
             gameLoopSo.FindProperty("playerController").objectReferenceValue = playerController;
             gameLoopSo.FindProperty("spiderController").objectReferenceValue = spiderController;
+            SerializedProperty wendigoLoopProperty = gameLoopSo.FindProperty("wendigoController");
+            if (wendigoLoopProperty != null)
+            {
+                wendigoLoopProperty.objectReferenceValue = wendigoController;
+            }
             gameLoopSo.ApplyModifiedPropertiesWithoutUndo();
 
             // Guardar escena
