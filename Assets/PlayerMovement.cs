@@ -19,6 +19,13 @@ public class PlayerMovement : MonoBehaviour
     public float bobSpeed = 7f;
     public float bobAmount = 0.03f;
 
+    [Header("Linterna")]
+    public KeyCode flashlightKey = KeyCode.F;
+    public Light flashlight;
+    public float flashlightIntensity = 2.5f;
+    public float flashlightRange = 18f;
+    public float flashlightSpotAngle = 55f;
+
     CharacterController controller;
 
     float xRotation = 0f;
@@ -26,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 originalCamPos;
     float bobTimer;
+    bool flashlightEnabled;
 
     void Start()
     {
@@ -33,12 +41,19 @@ public class PlayerMovement : MonoBehaviour
 
         originalCamPos = cameraPivot.localPosition;
 
+        SetupFlashlight();
+
         Cursor.lockState = CursorLockMode.Locked;
         Application.targetFrameRate = 60;
     }
 
     void Update()
     {
+        if (Input.GetKeyDown(flashlightKey))
+        {
+            ToggleFlashlight();
+        }
+
         // MOUSE
         float mouseX =
             Input.GetAxis("Mouse X")
@@ -126,4 +141,40 @@ public class PlayerMovement : MonoBehaviour
                 );
         }
     }
+
+        void SetupFlashlight()
+        {
+            if (flashlight == null)
+            {
+                GameObject flashlightObject = new GameObject("Flashlight");
+                Transform flashlightParent = cameraPivot != null ? cameraPivot : transform;
+                flashlightObject.transform.SetParent(flashlightParent, false);
+                flashlightObject.transform.localPosition = Vector3.zero;
+                flashlightObject.transform.localRotation = Quaternion.identity;
+
+                flashlight = flashlightObject.AddComponent<Light>();
+                flashlight.type = LightType.Spot;
+                flashlight.intensity = flashlightIntensity;
+                flashlight.range = flashlightRange;
+                flashlight.spotAngle = flashlightSpotAngle;
+                flashlight.shadows = LightShadows.Soft;
+            }
+
+            flashlight.enabled = flashlightEnabled;
+        }
+
+        void ToggleFlashlight()
+        {
+            flashlightEnabled = !flashlightEnabled;
+
+            if (flashlight == null)
+            {
+                SetupFlashlight();
+            }
+
+            if (flashlight != null)
+            {
+                flashlight.enabled = flashlightEnabled;
+            }
+        }
 }

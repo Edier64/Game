@@ -11,7 +11,7 @@ namespace Huye.Features.GameLoop.Model
 
     public class GameStateModel
     {
-        public GameState CurrentState = GameState.Playing;
+        public GameState CurrentState = GameState.MainMenu;
         public int CollectedPuzzlePieces;
         public int TotalPuzzlePieces = 3;
 
