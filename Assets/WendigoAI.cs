@@ -31,6 +31,11 @@ public class WendigoAI : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
 
+        if (animator == null)
+        {
+            Debug.LogWarning("El wendigo no tiene Animator. Agrega uno en el Inspector.");
+        }
+
         GoToNextPoint();
     }
 
@@ -57,21 +62,27 @@ public class WendigoAI : MonoBehaviour
             agent.SetDestination(player.position);
 
             // CAMINAR O CORRER
-            if (isAngry)
+            if (animator != null)
             {
-                agent.speed = runSpeed;
-                animator.SetFloat("Speed", 1f);
-            }
-            else
-            {
-                agent.speed = walkSpeed;
-                animator.SetFloat("Speed", 0.5f);
+                if (isAngry)
+                {
+                    agent.speed = runSpeed;
+                    animator.SetFloat("Speed", 1f);
+                }
+                else
+                {
+                    agent.speed = walkSpeed;
+                    animator.SetFloat("Speed", 0.5f);
+                }
             }
 
             // ATAQUE
             if (distance < attackRange && Time.time > lastAttackTime + attackCooldown)
             {
-                animator.SetTrigger("Attack");
+                if (animator != null)
+                {
+                    animator.SetTrigger("Attack");
+                }
                 lastAttackTime = Time.time;
             }
 
@@ -99,10 +110,13 @@ public class WendigoAI : MonoBehaviour
 
         agent.speed = walkSpeed;
 
-        if (agent.velocity.magnitude > 0.1f)
-            animator.SetFloat("Speed", 0.5f); // caminar
-        else
-            animator.SetFloat("Speed", 0f); // idle
+        if (animator != null)
+        {
+            if (agent.velocity.magnitude > 0.1f)
+                animator.SetFloat("Speed", 0.5f); // caminar
+            else
+                animator.SetFloat("Speed", 0f); // idle
+        }
     }
 
     void GoToNextPoint()

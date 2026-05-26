@@ -22,9 +22,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Linterna")]
     public KeyCode flashlightKey = KeyCode.F;
     public Light flashlight;
-    public float flashlightIntensity = 2.5f;
-    public float flashlightRange = 18f;
-    public float flashlightSpotAngle = 55f;
+    public float flashlightIntensity = 300f;
+    public float flashlightRange = 40f;
+    public float flashlightSpotAngle = 60f;
 
     CharacterController controller;
 
@@ -144,23 +144,15 @@ public class PlayerMovement : MonoBehaviour
 
         void SetupFlashlight()
         {
-            if (flashlight == null)
+            if (flashlight != null)
             {
-                GameObject flashlightObject = new GameObject("Flashlight");
-                Transform flashlightParent = cameraPivot != null ? cameraPivot : transform;
-                flashlightObject.transform.SetParent(flashlightParent, false);
-                flashlightObject.transform.localPosition = Vector3.zero;
-                flashlightObject.transform.localRotation = Quaternion.identity;
-
-                flashlight = flashlightObject.AddComponent<Light>();
                 flashlight.type = LightType.Spot;
                 flashlight.intensity = flashlightIntensity;
                 flashlight.range = flashlightRange;
                 flashlight.spotAngle = flashlightSpotAngle;
                 flashlight.shadows = LightShadows.Soft;
+                flashlight.enabled = flashlightEnabled;
             }
-
-            flashlight.enabled = flashlightEnabled;
         }
 
         void ToggleFlashlight()
@@ -175,6 +167,11 @@ public class PlayerMovement : MonoBehaviour
             if (flashlight != null)
             {
                 flashlight.enabled = flashlightEnabled;
+                Debug.Log("Linterna: " + (flashlightEnabled ? "ENCENDIDA" : "APAGADA"));
+            }
+            else
+            {
+                Debug.Log("ERROR: La linterna no está asignada en el Inspector");
             }
         }
 }
