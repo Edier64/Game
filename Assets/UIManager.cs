@@ -23,13 +23,8 @@ public class UIManager : MonoBehaviour
     public Button confirmExitButton;
     public Button cancelExitButton;
 
-    private PlayerMovement playerMovement;
-    private float originalMouseSensitivity;
-
     void Start()
     {
-        playerMovement = FindObjectOfType<PlayerMovement>();
-
         // Asignar listeners
         if (applyButton != null)
             applyButton.onClick.AddListener(ApplySettings);
@@ -61,11 +56,10 @@ public class UIManager : MonoBehaviour
         }
 
         // Cargar sensibilidad del mouse
-        if (mouseSensitivitySlider != null && playerMovement != null)
+        if (mouseSensitivitySlider != null)
         {
             float sensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 200f);
             mouseSensitivitySlider.value = sensitivity;
-            originalMouseSensitivity = playerMovement.mouseSensitivity;
         }
 
         // Cargar volumen de efectos
@@ -96,10 +90,9 @@ public class UIManager : MonoBehaviour
         }
 
         // Guardar sensibilidad del mouse
-        if (mouseSensitivitySlider != null && playerMovement != null)
+        if (mouseSensitivitySlider != null)
         {
             float sensitivity = mouseSensitivitySlider.value;
-            playerMovement.mouseSensitivity = sensitivity;
             PlayerPrefs.SetFloat("MouseSensitivity", sensitivity);
         }
 

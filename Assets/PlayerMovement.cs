@@ -19,13 +19,6 @@ public class PlayerMovement : MonoBehaviour
     public float bobSpeed = 7f;
     public float bobAmount = 0.03f;
 
-    [Header("Linterna")]
-    public KeyCode flashlightKey = KeyCode.F;
-    public Light flashlight;
-    public float flashlightIntensity = 300f;
-    public float flashlightRange = 40f;
-    public float flashlightSpotAngle = 60f;
-
     CharacterController controller;
 
     float xRotation = 0f;
@@ -33,7 +26,6 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 originalCamPos;
     float bobTimer;
-    bool flashlightEnabled;
 
     void Start()
     {
@@ -41,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
 
         originalCamPos = cameraPivot.localPosition;
 
-        SetupFlashlight();
+        mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 200f);
 
         Cursor.lockState = CursorLockMode.Locked;
         Application.targetFrameRate = 60;
@@ -49,11 +41,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(flashlightKey))
-        {
-            ToggleFlashlight();
-        }
-
         // MOUSE
         float mouseX =
             Input.GetAxis("Mouse X")
@@ -141,37 +128,4 @@ public class PlayerMovement : MonoBehaviour
                 );
         }
     }
-
-        void SetupFlashlight()
-        {
-            if (flashlight != null)
-            {
-                flashlight.type = LightType.Spot;
-                flashlight.intensity = flashlightIntensity;
-                flashlight.range = flashlightRange;
-                flashlight.spotAngle = flashlightSpotAngle;
-                flashlight.shadows = LightShadows.Soft;
-                flashlight.enabled = flashlightEnabled;
-            }
-        }
-
-        void ToggleFlashlight()
-        {
-            flashlightEnabled = !flashlightEnabled;
-
-            if (flashlight == null)
-            {
-                SetupFlashlight();
-            }
-
-            if (flashlight != null)
-            {
-                flashlight.enabled = flashlightEnabled;
-                Debug.Log("Linterna: " + (flashlightEnabled ? "ENCENDIDA" : "APAGADA"));
-            }
-            else
-            {
-                Debug.Log("ERROR: La linterna no está asignada en el Inspector");
-            }
-        }
 }
