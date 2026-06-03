@@ -13,6 +13,8 @@ namespace Huye.Features.Map.Controller
 
         private bool playerNearby = false;
 
+        public bool IsMapOpen => model.IsOpen;
+
         void Awake()
         {
             model = new MapModel();
