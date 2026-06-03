@@ -14,6 +14,8 @@ public class PauseMenu : MonoBehaviour
 
     void Start()
     {
+        isPaused = false;
+
         if (pausePanel != null)
             pausePanel.SetActive(false);
     }
@@ -22,10 +24,11 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            // Verificar si el mapa está abierto (si existe MapController)
             if (mapController != null && mapController.IsMapOpen)
             {
-                // Si el mapa está abierto, cerrar el mapa primero (esto lo maneja MapController)
-                // No hacemos nada aquí, MapController ya maneja ESC para cerrar el mapa
+                // Si el mapa está abierto, cerrar el mapa en vez de pausar
+                // MapController ya maneja ESC para cerrar el mapa
                 return;
             }
 
@@ -35,15 +38,13 @@ public class PauseMenu : MonoBehaviour
 
     public void TogglePause()
     {
-        isPaused = !isPaused;
-
         if (isPaused)
         {
-            PauseGame();
+            ResumeGame();
         }
         else
         {
-            ResumeGame();
+            PauseGame();
         }
     }
 

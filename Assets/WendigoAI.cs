@@ -40,6 +40,14 @@ public class WendigoAI : MonoBehaviour
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
+        // Verificar si hay NavMesh antes de inicializar
+        if (agent != null && !agent.isOnNavMesh)
+        {
+            Debug.LogWarning("WendigoAI: No hay NavMesh válido en la escena. El Wendigo permanecerá estático.");
+            Debug.LogWarning("💡 Bake el NavMesh en la escena (Window > AI > Navigation > Bake)");
+            return;
+        }
+
         // Autogenerar waypoints si es necesario
         if (autoGenerateWaypoints && (patrolPoints == null || patrolPoints.Length < 2))
         {
@@ -83,6 +91,12 @@ public class WendigoAI : MonoBehaviour
 
     void Update()
     {
+        // Verificar si hay NavMesh antes de procesar
+        if (agent != null && !agent.isOnNavMesh)
+        {
+            return;
+        }
+
         if (gameOverTriggered || player == null) return;
 
         float dist = Vector3.Distance(transform.position, player.position);
@@ -125,8 +139,11 @@ public class WendigoAI : MonoBehaviour
     void Patrol()
     {
         agent.speed = walkSpeed;
-        animator.SetFloat("Speed", 0.4f);
-        animator.SetBool("IsChasing", false);
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", 0.4f);
+            animator.SetBool("IsChasing", false);
+        }
 
         if (patrolPoints.Length == 0) return;
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
@@ -136,6 +153,14 @@ public class WendigoAI : MonoBehaviour
     void GoToNextPoint()
     {
         if (patrolPoints.Length == 0) return;
+
+        // Verificar que el agente esté en un NavMesh válido
+        if (agent != null && !agent.isOnNavMesh)
+        {
+            Debug.LogWarning("WendigoAI: NavMeshAgent no está en un NavMesh válido.");
+            return;
+        }
+
         agent.SetDestination(patrolPoints[currentPoint].position);
         currentPoint = (currentPoint + 1) % patrolPoints.Length; // secuencial
     }
@@ -143,16 +168,28 @@ public class WendigoAI : MonoBehaviour
     // ─── Persecución ──────────────────────────────────────────────────
     void Chase(float dist)
     {
+        // Verificar NavMesh antes de perseguir
+        if (agent != null && !agent.isOnNavMesh)
+        {
+            return;
+        }
+
         agent.speed = chaseSpeed;
         agent.SetDestination(player.position);
-        animator.SetFloat("Speed", 1f);
-        animator.SetBool("IsChasing", true);
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", 1f);
+            animator.SetBool("IsChasing", true);
+        }
 
         if (dist < attackRange)
         {
             currentState = State.Attacking;
             agent.isStopped = true;
-            animator.SetTrigger("Attack");
+            if (animator != null)
+            {
+                animator.SetTrigger("Attack");
+            }
             Invoke(nameof(TriggerGameOver), 0.8f); // esperar animación de ataque
         }
 
@@ -160,7 +197,10 @@ public class WendigoAI : MonoBehaviour
         if (dist > detectionRange * 2.5f)
         {
             currentState = State.Patrolling;
-            animator.SetBool("IsChasing", false);
+            if (animator != null)
+            {
+                animator.SetBool("IsChasing", false);
+            }
             agent.isStopped = false;
             GoToNextPoint();
         }
