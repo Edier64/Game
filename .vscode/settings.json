@@ -68,5 +68,5 @@
         "*.slnx": "*.csproj"
     },
     "dotnet.enableWorkspaceBasedDevelopment": false,
-    "dotnet.defaultSolution": "El hoyo.slnx"
+    "dotnet.defaultSolution": "Game.slnx"
 }

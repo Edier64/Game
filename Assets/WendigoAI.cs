@@ -5,130 +5,144 @@ public class WendigoAI : MonoBehaviour
 {
     [Header("Referencias")]
     public Transform player;
+    public GameObject screamerUI;       // Panel/imagen del screamer en Canvas
+    public AudioClip screamerSound;     // Sonido del screamer
     private NavMeshAgent agent;
     private Animator animator;
+    private AudioSource audioSource;
 
     [Header("Patrulla")]
     public Transform[] patrolPoints;
-    private int currentPoint;
+    private int currentPoint = 0;
 
-    [Header("Rangos")]
+    [Header("Detección")]
     public float detectionRange = 12f;
-    public float attackRange = 2f;
+    public float fieldOfViewAngle = 90f;  // Grados de visión frontal
+    public float attackRange = 1.8f;
 
     [Header("Velocidades")]
     public float walkSpeed = 2f;
-    public float runSpeed = 5f;
+    public float chaseSpeed = 6f;
 
-    private bool isChasing = false;
-    private bool isAngry = false;
+    private enum State { Patrolling, Chasing, Attacking }
+    private State currentState = State.Patrolling;
 
-    private float attackCooldown = 2f;
-    private float lastAttackTime;
+    private bool gameOverTriggered = false;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
 
-        if (animator == null)
-        {
-            Debug.LogWarning("El wendigo no tiene Animator. Agrega uno en el Inspector.");
-        }
-
+        if (screamerUI != null) screamerUI.SetActive(false);
         GoToNextPoint();
     }
 
     void Update()
     {
-        // SI NO HAY PLAYER → SOLO PATRULLA
-        if (player == null)
+        if (gameOverTriggered || player == null) return;
+
+        float dist = Vector3.Distance(transform.position, player.position);
+
+        switch (currentState)
         {
-            Patrol();
-            return;
-        }
+            case State.Patrolling:
+                Patrol();
+                if (CanSeePlayer(dist)) currentState = State.Chasing;
+                break;
 
-        float distance = Vector3.Distance(transform.position, player.position);
+            case State.Chasing:
+                Chase(dist);
+                break;
 
-        // DETECTAR
-        if (distance < detectionRange)
-        {
-            isChasing = true;
-        }
-
-        // PERSEGUIR
-        if (isChasing)
-        {
-            agent.SetDestination(player.position);
-
-            // CAMINAR O CORRER
-            if (animator != null)
-            {
-                if (isAngry)
-                {
-                    agent.speed = runSpeed;
-                    animator.SetFloat("Speed", 1f);
-                }
-                else
-                {
-                    agent.speed = walkSpeed;
-                    animator.SetFloat("Speed", 0.5f);
-                }
-            }
-
-            // ATAQUE
-            if (distance < attackRange && Time.time > lastAttackTime + attackCooldown)
-            {
-                if (animator != null)
-                {
-                    animator.SetTrigger("Attack");
-                }
-                lastAttackTime = Time.time;
-            }
-
-            // PERDER AL JUGADOR
-            if (distance > detectionRange * 2f)
-            {
-                isChasing = false;
-                GoToNextPoint();
-            }
-        }
-        else
-        {
-            Patrol();
+            case State.Attacking:
+                // Animación de ataque ya lanzada, esperar callback
+                break;
         }
     }
 
+    // ─── Visión en cono ────────────────────────────────────────────────
+    bool CanSeePlayer(float dist)
+    {
+        if (dist > detectionRange) return false;
+
+        Vector3 dirToPlayer = (player.position - transform.position).normalized;
+        float angle = Vector3.Angle(transform.forward, dirToPlayer);
+        if (angle > fieldOfViewAngle / 2f) return false;
+
+        // Raycast para que paredes lo bloqueen
+        if (Physics.Raycast(transform.position + Vector3.up, dirToPlayer, out RaycastHit hit, detectionRange))
+        {
+            if (hit.transform == player) return true;
+        }
+        return false;
+    }
+
+    // ─── Patrulla secuencial ───────────────────────────────────────────
     void Patrol()
     {
-        if (patrolPoints.Length == 0) return;
-
-        if (!agent.pathPending && agent.remainingDistance < 1f)
-        {
-            GoToNextPoint();
-        }
-
         agent.speed = walkSpeed;
+        animator.SetFloat("Speed", 0.4f);
+        animator.SetBool("IsChasing", false);
 
-        if (animator != null)
-        {
-            if (agent.velocity.magnitude > 0.1f)
-                animator.SetFloat("Speed", 0.5f); // caminar
-            else
-                animator.SetFloat("Speed", 0f); // idle
-        }
+        if (patrolPoints.Length == 0) return;
+        if (!agent.pathPending && agent.remainingDistance < 0.5f)
+            GoToNextPoint();
     }
 
     void GoToNextPoint()
     {
         if (patrolPoints.Length == 0) return;
-
-        currentPoint = Random.Range(0, patrolPoints.Length);
         agent.SetDestination(patrolPoints[currentPoint].position);
+        currentPoint = (currentPoint + 1) % patrolPoints.Length; // secuencial
     }
 
-    public void MakeAngry()
+    // ─── Persecución ──────────────────────────────────────────────────
+    void Chase(float dist)
     {
-        isAngry = true;
+        agent.speed = chaseSpeed;
+        agent.SetDestination(player.position);
+        animator.SetFloat("Speed", 1f);
+        animator.SetBool("IsChasing", true);
+
+        if (dist < attackRange)
+        {
+            currentState = State.Attacking;
+            agent.isStopped = true;
+            animator.SetTrigger("Attack");
+            Invoke(nameof(TriggerGameOver), 0.8f); // esperar animación de ataque
+        }
+
+        // Si el jugador se aleja mucho → volver a patrullar
+        if (dist > detectionRange * 2.5f)
+        {
+            currentState = State.Patrolling;
+            animator.SetBool("IsChasing", false);
+            agent.isStopped = false;
+            GoToNextPoint();
+        }
+    }
+
+    // ─── Game Over ────────────────────────────────────────────────────
+    void TriggerGameOver()
+    {
+        if (gameOverTriggered) return;
+        gameOverTriggered = true;
+
+        if (screamerUI != null) screamerUI.SetActive(true);
+        if (audioSource != null && screamerSound != null)
+            audioSource.PlayOneShot(screamerSound);
+
+        // Bloquear movimiento del jugador
+        PlayerMovement pm = player.GetComponent<PlayerMovement>();
+        if (pm != null) pm.enabled = false;
+
+        Invoke(nameof(LoadStartScene), 2.5f);
+    }
+
+    void LoadStartScene()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0); // Escena índice 0 = menú/inicio
     }
 }

@@ -3188,16 +3188,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2595be0999a238b42aaefe9d1010c9af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FootstepSound
-  footstepClip: {fileID: 8300000, guid: 792b06ac30c93234c82ecda845395aaa, type: 3}
-  audioSource: {fileID: 0}
-  walkSpeed: 5
-  runSpeed: 9
-  walkStepInterval: 0.65
-  runStepInterval: 0.5
-  stepTimer: 0
-  controller: {fileID: 0}
-  isRunning: 0
-  wasMoving: 0
 --- !u!1 &434522195 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 185919208800727098, guid: 4ed1f237ca09ddf4b89f455e7d6a876f, type: 3}
@@ -3772,6 +3762,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fb87803c48ed84545a44d5a33431fd16, type: 3}
       insertIndex: -1
       addedObject: {fileID: 758114816}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fb87803c48ed84545a44d5a33431fd16, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 758114818}
   m_SourcePrefab: {fileID: 100100000, guid: fb87803c48ed84545a44d5a33431fd16, type: 3}
 --- !u!1 &506414043
 GameObject:
@@ -5376,6 +5369,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!111 &758114818
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 758114806}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0
 --- !u!1 &776715466 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5743678420738495316, guid: 4ed1f237ca09ddf4b89f455e7d6a876f, type: 3}
