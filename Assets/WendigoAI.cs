@@ -15,6 +15,11 @@ public class WendigoAI : MonoBehaviour
     public Transform[] patrolPoints;
     private int currentPoint = 0;
 
+    [Header("Autogeneración de waypoints")]
+    public bool autoGenerateWaypoints = true;
+    public float waypointRadius = 15f;
+    public int waypointCount = 4;
+
     [Header("Detección")]
     public float detectionRange = 12f;
     public float fieldOfViewAngle = 90f;  // Grados de visión frontal
@@ -35,8 +40,45 @@ public class WendigoAI : MonoBehaviour
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
+        // Autogenerar waypoints si es necesario
+        if (autoGenerateWaypoints && (patrolPoints == null || patrolPoints.Length < 2))
+        {
+            GenerateRandomWaypoints();
+        }
+
         if (screamerUI != null) screamerUI.SetActive(false);
         GoToNextPoint();
+    }
+
+    void GenerateRandomWaypoints()
+    {
+        patrolPoints = new Transform[waypointCount];
+        Vector3 startPosition = transform.position;
+
+        for (int i = 0; i < waypointCount; i++)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * waypointRadius;
+            randomDirection += startPosition;
+
+            if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, waypointRadius, NavMesh.AllAreas))
+            {
+                // Crear un GameObject para cada waypoint (invisible)
+                GameObject waypoint = new GameObject($"AutoWaypoint_{i}");
+                waypoint.transform.position = hit.position;
+                waypoint.transform.SetParent(transform); // Hijo del Wendigo para organización
+                patrolPoints[i] = waypoint.transform;
+            }
+            else
+            {
+                // Si no se puede encontrar un punto válido en NavMesh, usar la posición inicial
+                GameObject waypoint = new GameObject($"AutoWaypoint_{i}_Fallback");
+                waypoint.transform.position = startPosition + new Vector3(i * 2f, 0, i * 2f);
+                waypoint.transform.SetParent(transform);
+                patrolPoints[i] = waypoint.transform;
+            }
+        }
+
+        Debug.Log($"Wendigo: Autogenerados {patrolPoints.Length} waypoints en radio de {waypointRadius} unidades");
     }
 
     void Update()
@@ -144,5 +186,20 @@ public class WendigoAI : MonoBehaviour
     void LoadStartScene()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(0); // Escena índice 0 = menú/inicio
+    }
+
+    void OnDestroy()
+    {
+        // Limpiar waypoints autogenerados
+        if (autoGenerateWaypoints && patrolPoints != null)
+        {
+            foreach (Transform waypoint in patrolPoints)
+            {
+                if (waypoint != null && waypoint.name.StartsWith("AutoWaypoint"))
+                {
+                    Destroy(waypoint.gameObject);
+                }
+            }
+        }
     }
 }

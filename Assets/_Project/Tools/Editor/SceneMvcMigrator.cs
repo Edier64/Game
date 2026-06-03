@@ -45,7 +45,7 @@ namespace Huye.Tools.Editor
 
             if (playerGo == null)
             {
-                PlayerController existing = UnityEngine.Object.FindFirstObjectByType<PlayerController>(FindObjectsInactive.Include);
+                PlayerController existing = UnityEngine.Object.FindAnyObjectByType<PlayerController>(FindObjectsInactive.Include);
                 return existing;
             }
 
@@ -104,7 +104,7 @@ namespace Huye.Tools.Editor
 
             if (spiderGo == null)
             {
-                SpiderController existing = UnityEngine.Object.FindFirstObjectByType<SpiderController>(FindObjectsInactive.Include);
+                SpiderController existing = UnityEngine.Object.FindAnyObjectByType<SpiderController>(FindObjectsInactive.Include);
                 return existing;
             }
 
@@ -178,7 +178,7 @@ namespace Huye.Tools.Editor
 
             if (wendigoGo == null)
             {
-                WendigoController existing = UnityEngine.Object.FindFirstObjectByType<WendigoController>(FindObjectsInactive.Include);
+                WendigoController existing = UnityEngine.Object.FindAnyObjectByType<WendigoController>(FindObjectsInactive.Include);
                 if (existing != null)
                 {
                     return existing;
@@ -259,7 +259,7 @@ namespace Huye.Tools.Editor
                 gameLoop = Undo.AddComponent<GameLoopController>(systemsGo);
             }
 
-            GameLoopView gameLoopView = UnityEngine.Object.FindFirstObjectByType<GameLoopView>(FindObjectsInactive.Include);
+            GameLoopView gameLoopView = UnityEngine.Object.FindAnyObjectByType<GameLoopView>(FindObjectsInactive.Include);
 
             SerializedObject bootstrapSo = new SerializedObject(bootstrap);
             bootstrapSo.FindProperty("playerController").objectReferenceValue = playerController;
@@ -287,7 +287,7 @@ namespace Huye.Tools.Editor
                 return null;
             }
 
-            UnityEngine.Object found = UnityEngine.Object.FindFirstObjectByType(legacyType, FindObjectsInactive.Include);
+            UnityEngine.Object found = UnityEngine.Object.FindAnyObjectByType(legacyType, FindObjectsInactive.Include);
             return found as MonoBehaviour;
         }
 
